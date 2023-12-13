@@ -1,14 +1,12 @@
 import { FcAlarmClock } from "react-icons/fc";
 import useAuth from "../../../hooks/useAuth/useAuth";
-import { useContext } from "react";
-import { AuthContext } from "../../../providers/AuthProviders/AuthProvider";
 
 const Navbar = () => {
     const user = useAuth();
 
     // console.log(user);
     return (
-        <div className="navbar bg-base-100">
+        <div className="navbar bg-blue-500 border-b-2 border-blue-800 rounded-md my-2">
             <div className="flex-1">
                 <a className="btn btn-ghost text-xl"><FcAlarmClock /> Pomodoro</a>
             </div>
