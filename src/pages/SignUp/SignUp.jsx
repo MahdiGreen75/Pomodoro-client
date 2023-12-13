@@ -1,8 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./background.css"
 import useAuth from "../../hooks/useAuth/useAuth";
+import { updateProfile } from "firebase/auth";
+import Swal from "sweetalert2";
 const SignUp = () => {
-    const { signUp } = useAuth();
+    const navigate = useNavigate();
+    const { signUp, user, logOutUser } = useAuth();
     console.log()
     const handleLogin = (e) => {
         e.preventDefault();
@@ -13,7 +16,23 @@ const SignUp = () => {
         const password = form.password.value;
         // console.log(name, password, picLink, email);
         signUp(email, password)
-            .then()
+            .then(result => {
+                //register update profile
+                return updateProfile(result.user, {
+                    displayName: name,
+                    photoURL: picLink
+                })
+            })
+            .then(() => {
+                form.reset();
+                console.log("profile updated successfull.")
+                return logOutUser();
+            })
+            .then(()=>{
+                console.log(`${user?.displayName} Logout successfull.`)
+                navigate("/login");
+            })
+            .catch(() => console.err("profile update error."))
 
     }
 

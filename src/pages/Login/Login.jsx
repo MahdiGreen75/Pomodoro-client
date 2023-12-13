@@ -1,14 +1,39 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './background.css'
+import useAuth from "../../hooks/useAuth/useAuth";
+import Swal from "sweetalert2";
 
 const Login = () => {
-
+    const navigate = useNavigate();
+    const { loginUser } = useAuth();
     const handleLogin = (e) => {
         e.preventDefault();
         const form = e.target;
         const email = form.email.value;
         const password = form.password.value;
-        console.log(email, password);
+        console.log(email, password, loginUser);
+        loginUser(email, password)
+            .then((result) => {
+                const user = result.user;
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: `Welcome, ${user?.displayName}. Manage your time precisly.`,
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+                navigate("/");
+                console.log(user?.displayName, "is logged in.");
+            })
+            .catch(()=>{
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: `Enter your email and password correctly.`,
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+            })
 
     }
 
