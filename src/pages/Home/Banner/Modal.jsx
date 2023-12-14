@@ -3,20 +3,44 @@
 import { useState } from "react";
 import Timer from "../Timer/Timer";
 import { IoCloseSharp } from "react-icons/io5";
-
+import useAuth from "../../../hooks/useAuth/useAuth"
+import axios from "axios";
 
 const Modal = ({ showMe }) => {
+    const { user } = useAuth();
+    // const [completeSession, setCompleteSession] = useState(false);
+
     const [sessionValues, setSessionValues] = useState({});
     const handleModalClose = () => {
         showMe(false);
     }
+
+    let percipator = {};
+    percipator.isSessionCompleted = false;
+    console.log("Initial percipator:", percipator);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
         const form = e.target;
         const name = form.name.value;
         const limit = form.limit.value;
-        setSessionValues({ name, limit });
+
+        console.log("Form values:", name, limit, user?.email);
+
+        //user who joined the session
+        percipator.email = user?.email;
+        percipator.sessionName = name;
+        percipator.sessionLimit = limit;
+
+        console.log("Updated percipator:", percipator);
+        // DONE: send a post req to the server if 
+        // the session is terminated.
+        axios.post("https://pomodoro-server.vercel.app/api/v1/uesr/session-list", percipator)
+            .then(res => {
+                console.log(res.data.insertedId, "is where this data stored.");
+                setSessionValues({ name, limit, sessionUpdateId: res.data.insertedId });
+            })
+
     }
 
     return (
@@ -29,14 +53,7 @@ const Modal = ({ showMe }) => {
                 </div>
             </form>
             <div className="divider"></div>
-            {/* <ProgressBar
-                completed={60}
-                borderRadius="20px"
-                labelColor="#ffffff"
-                padding="1px"
-                transitionDuration="300ms"
-                maxCompleted={100}
-            /> */}
+
             {
                 sessionValues.name && <>
                     <Timer {...sessionValues}></Timer>

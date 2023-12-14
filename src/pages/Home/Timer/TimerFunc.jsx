@@ -2,10 +2,13 @@
 import { useState, useEffect } from 'react';
 import sound from "../../../assets/ring.mp3.mp3";
 import ProgressBar from '@ramonak/react-progress-bar';
+import axios from 'axios';
+import useAuth from '../../../hooks/useAuth/useAuth';
 // import ProgressBar from "@ramonak/react-progress-bar";
 // import finishSound from "../../../assets/complete.mp3.mp3";
 
-function TimerFunc({ toStop }) {
+function TimerFunc({ toStop, sessionUpdateId }) {
+    const { user } = useAuth();
     const [currentTime, setCurrentTime] = useState(0);
 
     useEffect(() => {
@@ -17,9 +20,17 @@ function TimerFunc({ toStop }) {
                 setCurrentTime((prevTime) => {
                     if (prevTime + 1 >= toStop) {
                         clearInterval(timerInterval);
-                        playSong(); // Play the song when the timer reaches 'interval'
-                        //if the song is played then 
+                        playSong();
                         console.log("played the song");
+                        // Session is completed by the user 
+                        // after the song is played. 
+                        // TODO: send a patch req to the server if 
+                        // the session is completed.
+                        axios.patch("https://pomodoro-server.vercel.app/api/v1/uesr/session-list-update", { isSessionCompleted: true, id: sessionUpdateId })
+                            .then(res => {
+                                console.log(res.data, "This session is completed.");
+                            })
+
                         return toStop; // Reset the timer
                     } else {
                         return prevTime + 1;
