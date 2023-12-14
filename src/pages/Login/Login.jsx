@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 const Login = () => {
     const navigate = useNavigate();
-    const { loginUser } = useAuth();
+    const { loginUser, isLoading } = useAuth();
     const handleLogin = (e) => {
         e.preventDefault();
         const form = e.target;
@@ -25,7 +25,7 @@ const Login = () => {
                 navigate("/");
                 console.log(user?.displayName, "is logged in.");
             })
-            .catch(()=>{
+            .catch(() => {
                 Swal.fire({
                     position: "center",
                     icon: "error",
@@ -35,6 +35,11 @@ const Login = () => {
                 });
             })
 
+    }
+    if (isLoading) {
+        return <div className="w-full my-10 flex items-center justify-center">
+            <span className="loading loading-spinner loading-lg"></span>
+        </div>
     }
 
     return (

@@ -1,5 +1,6 @@
 import Banner from "../Banner/Banner";
 
+
 const Home = () => {
     return (
         <div>
@@ -9,3 +10,4 @@ const Home = () => {
 };
 
 export default Home;
+

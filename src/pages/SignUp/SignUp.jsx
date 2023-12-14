@@ -2,10 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import "./background.css"
 import useAuth from "../../hooks/useAuth/useAuth";
 import { updateProfile } from "firebase/auth";
-import Swal from "sweetalert2";
+
 const SignUp = () => {
     const navigate = useNavigate();
-    const { signUp, user, logOutUser } = useAuth();
+    const { signUp, user, logOutUser , isLoading} = useAuth();
     console.log()
     const handleLogin = (e) => {
         e.preventDefault();
@@ -34,6 +34,12 @@ const SignUp = () => {
             })
             .catch(() => console.err("profile update error."))
 
+    }
+
+    if (isLoading) {
+        return <div className="w-full my-10 flex items-center justify-center">
+            <span className="loading loading-spinner loading-lg"></span>
+        </div>
     }
 
     return (
